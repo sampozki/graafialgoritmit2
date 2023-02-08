@@ -1,12 +1,15 @@
 #/usr/bin/env python
 
-## An implementation for a priorityqueue
+
+# An implementation for a priorityqueue
+
 class PQ:
+
     def __init__(self):
-        ## H contains pairs of the form (value, key)
+        # H contains pairs of the form (value, key)
         self.H = []
-        ## Using index i we can access a pair as follows
-        ## H[i] = (value, key)
+        # Using index i we can access a pair as follows
+        # H[i] = (value, key)
         self.Index = {}
 
     def __contains__(self, key):
@@ -19,13 +22,13 @@ class PQ:
             return False
         return True
     
-    ## Done = true if the key has been used before, but is no longer in use
+    # Done = true if the key has been used before, but is no longer in use
     def done(self,key):
         if key in self.Index and self.Index[key] < 0:
             return True
         return False
 
-    ## Push a pair (value, key) into the priority queue
+    # Push a pair (value, key) into the priority queue
     def push(self,a):
         key = a[1]
         value = a[0]
@@ -36,6 +39,7 @@ class PQ:
             return
         i = len(self.H)
         self.H.append(a)
+
         while i > 0:
             j = (i-1)/2
             if self.H[j] > a:
@@ -61,7 +65,7 @@ class PQ:
             left = 2*i + 1
             right = 2*i + 2
             if self.H[left] < a:
-                ## left is the smallest; left becomes the new i 
+                # left is the smallest; left becomes the new i 
                 if right >= len(self.H) or self.H[right] > self.H[left]:
                     self.H[i] = self.H[left]
                     self.H[left] = a
@@ -90,13 +94,13 @@ class PQ:
         if oldvalue == value:
             return
         elif oldvalue < value:
-            print "inserting " + str(a)
-            print "found at index " + str(i)
-            print "and the item is " + str(self.H[i])
+            print("inserting " + str(a))
+            print("found at index " + str(i))
+            print("and the item is " + str(self.H[i]))
             raise Exception("key value increase not allowed")
 
         self.H[i] = a 
-        ## Decrease priority, i.e., move up
+        # Decrease priority, i.e., move up
         while i > 0:
             j = (i-1) / 2
             if self.H[j] <= a:
@@ -108,5 +112,5 @@ class PQ:
             self.Index[nkey] = i
             i = j
         self.Index[key] = 0
-        ## Increase priority: Not allowed:
+        # Increase priority: Not allowed:
  

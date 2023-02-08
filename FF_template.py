@@ -1,11 +1,11 @@
 #! /usr/bin/env python
 
-## This file contains a template for the Ford-Fulkerson algorithm. 
+# This file contains a template for the Ford-Fulkerson algorithm. 
 
 from graafi3 import Graph
 from copy import deepcopy as copy
 
-## Read a set containing vertices.
+# Read a set containing vertices.
 def ReadNodes(filename):
     ff = open(filename,'r')
     x = ff.readlines()[0].split()
@@ -25,27 +25,27 @@ def SumFlow(f1,f2):
     return f
 
 
-## Form the residual network.
+# Form the residual network.
 def MakeResidual(G,f):
     Gr = copy(G)
     for (u,v) in f:
         c = 0
-        ## Copy the weight
+        # Copy the weight
         if (u,v) in Gr.W:
             c = Gr.W[(u,v)]
-        #calculate residual capasity
+        # calculate residual capasity
         cf = c - f[(u,v)]
         if not v in Gr.AL[u]:
             Gr.addEdge(u,v)
         Gr.W[(u,v)] = cf
     return Gr
 
-## This function is not complete. You must provide code to make it work properly.
+# This function is not complete. You must provide code to make it work properly.
 def FindAugPath(Gr,s,t):
     aug = []
-    ## laskuri is a counter to see how many edges are processed in total
+    # laskuri is a counter to see how many edges are processed in total
     laskuri = 0
-    ## Check to see whether s and t are adjacent.
+    # Check to see whether s and t are adjacent.
     for u in Gr.adj(s):
         laskuri += 1
         if u == t and Gr.W[(s,u)] > 0:
@@ -54,7 +54,7 @@ def FindAugPath(Gr,s,t):
             break
     return (aug,laskuri)
 
-## This is only a template, and does not work. You must complete it to make it work.
+# This is only a template, and does not work. You must complete it to make it work.
 def MakeAugFlow(Gr,s,t,path):
     f = {}
     if not path:
@@ -64,7 +64,7 @@ def MakeAugFlow(Gr,s,t,path):
     if path[-1] != t:
         raise Exception("Path not to t")
     u = s
-    ## This is the minimum capacity on the path. You must find it!
+    # This is the minimum capacity on the path. You must find it!
     cfp = Gr.W[(s,t)]
     #
     # Tahan tarvitaan implementaatio cfp:n laskemiselle
@@ -80,7 +80,7 @@ def MakeAugFlow(Gr,s,t,path):
     return f
 
 def FordFulkerson(G,s,t):
-    ## laskuri is a counter to see how many edges are processed in total
+    # laskuri is a counter to see how many edges are processed in total
     laskuri = 0
     f = {}
     pp = FindAugPath(G,s,t)
@@ -102,9 +102,9 @@ def FordFulkerson(G,s,t):
     return f
             
 if __name__ == "__main__":
-    G = Graph("testgraph_weighted")
-    S = ReadNodes("testset_flow")
+    G = Graph("testdata/testgraph_weighted")
+    S = ReadNodes("testdata/testset_flow")
     s = S[0]
     t = S[1]
     f = FordFulkerson(G,s,t)
-    print f
+    print (f)
