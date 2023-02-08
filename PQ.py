@@ -10,10 +10,10 @@ class PQ:
         self.H = []
         # Using index i we can access a pair as follows
         # H[i] = (value, key)
-        self.Index = {}
+        self.index = {}
 
     def __contains__(self, key):
-        if key in self.Index and self.Index[key] > 0:
+        if key in self.index and self.index[key] > 0:
             return True
         return False
 
@@ -24,7 +24,7 @@ class PQ:
     
     # Done = true if the key has been used before, but is no longer in use
     def done(self,key):
-        if key in self.Index and self.Index[key] < 0:
+        if key in self.index and self.index[key] < 0:
             return True
         return False
 
@@ -45,19 +45,19 @@ class PQ:
             if self.H[j] > a:
                 self.H[i] = self.H[j]
                 oldkey = self.H[i][1]
-                self.Index[oldkey] = i
+                self.index[oldkey] = i
                 self.H[j] = a
                 i = j
             else:
                 break
-        self.Index[key] = i
+        self.index[key] = i
 
     def pop(self):
         togo = self.H[0]
         a = self.H.pop()
         key = a[1]
         if a == togo:
-            self.Index[key] = -1
+            self.index[key] = -1
             return a
         self.H[0] = a
         i = 0
@@ -70,25 +70,25 @@ class PQ:
                     self.H[i] = self.H[left]
                     self.H[left] = a
                     l_key = self.H[i][1]
-                    self.Index[l_key] = i
+                    self.index[l_key] = i
                     i = left
                     continue
             if right < len(self.H) and self.H[right] < a:
                 self.H[i] = self.H[right]
                 self.H[right] = a
                 r_key = self.H[i][1]
-                self.Index[r_key] = i
+                self.index[r_key] = i
                 i = right
                 continue
             break
-        self.Index[a[1]] = i
-        self.Index[togo[1]] = -1
+        self.index[a[1]] = i
+        self.index[togo[1]] = -1
         return togo
 
     def update(self, a):
         value = a[0]
         key = a[1]
-        i = self.Index[key]
+        i = self.index[key]
         oldvalue = self.H[i][0]
         oldkey = self.H[i][1]
         if oldvalue == value:
@@ -104,13 +104,13 @@ class PQ:
         while i > 0:
             j = (i-1) / 2
             if self.H[j] <= a:
-                self.Index[key] = i
+                self.index[key] = i
                 return
             self.H[i] = self.H[j]
             self.H[j] = a
             nkey = self.H[i][1]
-            self.Index[nkey] = i
+            self.index[nkey] = i
             i = j
-        self.Index[key] = 0
+        self.index[key] = 0
         # Increase priority: Not allowed:
  

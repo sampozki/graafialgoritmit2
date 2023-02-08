@@ -6,7 +6,7 @@ from graafi3 import Graph
 from copy import deepcopy as copy
 
 # Read a set containing vertices.
-def ReadNodes(filename):
+def readNodes(filename):
     ff = open(filename,'r')
     x = ff.readlines()[0].split()
     S = []
@@ -15,7 +15,7 @@ def ReadNodes(filename):
     return S
 
 # Add the flows in f1 and f2.
-def SumFlow(f1,f2):
+def sumFlow(f1,f2):
     f = copy(f1)
     for (u,v) in f2:
         if not (u,v) in f:
@@ -26,7 +26,7 @@ def SumFlow(f1,f2):
 
 
 # Form the residual network.
-def MakeResidual(G,f):
+def makeResidual(G,f):
     Gr = copy(G)
     for (u,v) in f:
         c = 0
@@ -41,7 +41,7 @@ def MakeResidual(G,f):
     return Gr
 
 # This function is not complete. You must provide code to make it work properly.
-def FindAugPath(Gr,s,t):
+def findAugPath(Gr,s,t):
     aug = []
     # laskuri is a counter to see how many edges are processed in total
     laskuri = 0
@@ -55,7 +55,7 @@ def FindAugPath(Gr,s,t):
     return (aug,laskuri)
 
 # This is only a template, and does not work. You must complete it to make it work.
-def MakeAugFlow(Gr,s,t,path):
+def makeAugFlow(Gr,s,t,path):
     f = {}
     if not path:
         return f
@@ -79,32 +79,32 @@ def MakeAugFlow(Gr,s,t,path):
             raise Exception("illegal residual flow")
     return f
 
-def FordFulkerson(G,s,t):
+def fordFulkerson(G,s,t):
     # laskuri is a counter to see how many edges are processed in total
     laskuri = 0
     f = {}
-    pp = FindAugPath(G,s,t)
+    pp = findAugPath(G,s,t)
     p = pp[0]
     laskuri += pp[1]
-    fp = MakeAugFlow(G,s,t,p)
-    f = SumFlow(f,fp)
-    Gr = MakeResidual(G,f)
+    fp = makeAugFlow(G,s,t,p)
+    f = sumFlow(f,fp)
+    Gr = makeResidual(G,f)
     i = 0
     while p and i < 1000:
         i += 1
-        pp = FindAugPath(Gr,s,t)
+        pp = findAugPath(Gr,s,t)
         p = pp[0]
         laskuri += pp[1]
-        fp = MakeAugFlow(Gr,s,t,p)
-        f = SumFlow(f,fp)
-        Gr = MakeResidual(G,f)
+        fp = makeAugFlow(Gr,s,t,p)
+        f = sumFlow(f,fp)
+        Gr = makeResidual(G,f)
     print("Laskuri laski: " + str(laskuri))
     return f
             
 if __name__ == "__main__":
     G = Graph("testdata/testgraph_weighted")
-    S = ReadNodes("testdata/testset_flow")
+    S = readNodes("testdata/testset_flow")
     s = S[0]
     t = S[1]
-    f = FordFulkerson(G,s,t)
+    f = fordFulkerson(G,s,t)
     print (f)
