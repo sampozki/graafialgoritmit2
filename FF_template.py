@@ -44,15 +44,37 @@ def makeResidual(G,f):
 def findAugPath(Gr,s,t):
     aug = []
     # laskuri is a counter to see how many edges are processed in total
-    laskuri = 0
+    count = 0
     # Check to see whether s and t are adjacent.
-    for u in Gr.adj(s):
-        laskuri += 1
-        if u == t and Gr.W[(s,u)] > 0:
-            aug.append(s)
-            aug.append(t)
-            break
-    return (aug,laskuri)
+
+    # BFS ?????
+    path = []
+    queue = [s]
+    parent = {}
+    visited = list()
+
+    while queue:
+        count += 1
+        currentNode = queue.pop(0)
+        visited.append(currentNode)
+
+        for adj in Gr.adj(currentNode):
+            if adj == t and Gr.W[currentNode,t] > 0:
+                parent[adj] = currentNode
+                previousInPath = adj
+
+                while True:
+                    path.insert(0,previousInPath)
+                    previousInPath = parent[previousInPath]
+                    if previousInPath == s:
+                        path.insert(0,previousInPath)
+                        return(path,count)
+
+            if adj not in visited and Gr.W[(currentNode, adj)] > 0:
+                queue.append(adj)
+                parent[adj] = currentNode
+
+    return ([], count)
 
 # This is only a template, and does not work. You must complete it to make it work.
 def makeAugFlow(Gr,s,t,path):
@@ -65,20 +87,42 @@ def makeAugFlow(Gr,s,t,path):
         raise Exception("Path not to t")
     u = s
     # This is the minimum capacity on the path. You must find it!
-    cfp = Gr.W[(s,t)]
+
+
+    # print(Gr.W)
+    min = Gr.W[(path[0], path[1])]
+    print(min)
+    for i in range(1, len(path)):
+        flowAvailable = Gr.W[(path[i-1], path[i])]
+        # print("flow available: " + str(flowAvailable))
+        if flowAvailable < min:
+            min = flowAvailable
+
+    cfp = min
     #
     # Tahan tarvitaan implementaatio cfp:n laskemiselle
-    #
-    for v in path:
-        # Skip loops and first
-        if v == u:
-            continue
-        f[(u,v)] = cfp
-        f[(v,u)] = -cfp
-        if Gr.W[(u,v)] < cfp:
-            raise Exception("illegal residual flow")
-    return f
 
+    # CFP = Flow's amount 
+    #print("Min flow: " + str(cfp))
+    #
+    print(path)
+
+    #for i in range(1, len(path)):
+    #    f[(u,path[i])] = cfp
+    #    f[(path[i],u)] = -cfp
+
+
+    #print(f)
+
+    for i in range(1, len(path)):
+        if path[i] == u:
+            continue
+        
+        f[(path[i-1], path[i])] = cfp
+        f[(path[i], path[i-1])] = -cfp
+
+    return f
+    
 def fordFulkerson(G,s,t):
     # laskuri is a counter to see how many edges are processed in total
     laskuri = 0
@@ -97,14 +141,38 @@ def fordFulkerson(G,s,t):
         laskuri += pp[1]
         fp = makeAugFlow(Gr,s,t,p)
         f = sumFlow(f,fp)
+
+        #print("fp: " + str(fp))
+        #print("f: " + str(f))
+
         Gr = makeResidual(G,f)
+
+    sum = 0
+    for i in f.keys():
+        if i[0] == 5:
+            sum += f[i]
+    print("Max flow: " + str(sum))
+
     print("Laskuri laski: " + str(laskuri))
     return f
-            
+        
 if __name__ == "__main__":
-    G = Graph("testdata/testgraph_weighted")
-    S = readNodes("testdata/testset_flow")
+    G = Graph("testdata/testflow_10")
+    S = readNodes("testdata/testset_10")
+
+    G = Graph("testdata/testflow_10")
+    S = readNodes("testdata/testset_10")
+
+    # print(S)
     s = S[0]
     t = S[1]
     f = fordFulkerson(G,s,t)
-    print (f)
+
+    maxflow = 0
+
+    for i in f:
+        if(i[0]) == s:
+            maxflow += f[i]
+            # print(str(i) + " - " + str(f[i]))
+
+    print("Network's max flow: " + str(maxflow))
